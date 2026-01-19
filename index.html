@@ -3,775 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Эко-Аналитика: Промышленное воздействие</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Chosen Palette: Eco-Industrial -->
-    <!-- 
-        Backgrounds: Warm Stone/Neutral (bg-stone-50)
-        Primary Text: Slate Dark (text-slate-800)
-        Accents: Industrial Blue (slate-600), Pollution Red (rose-600), Eco Green (emerald-600), Warning Amber (amber-500)
-    -->
-
+    <title>BioModel.ai — Биологическое моделирование и Генетика</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Custom Chart Container Styles */
-        .chart-wrapper {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            max-height: 400px;
-        }
-        
-        @media (min-width: 768px) {
-            .chart-wrapper {
-                height: 350px;
-            }
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --primary-color: #2ea043;
+            --secondary-color: #58a6ff;
+            --accent-color: #ff4757;
+            --card-bg: #161b22;
+            --border-color: #30363d;
         }
 
-        /* Utility for process flow connectors using CSS borders */
-        .flow-arrow-down::after {
-            content: '↓';
-            display: block;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(13, 17, 23, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-color); font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--secondary-color); }
+
+        /* Hero */
+        .hero {
+            padding: 6rem 5%;
             text-align: center;
-            font-size: 1.5rem;
-            color: #94a3b8; /* slate-400 */
-            margin: 0.5rem 0;
-        }
-        
-        .flow-arrow-right::after {
-            content: '→';
-            display: inline-block;
-            margin-left: 0.5rem;
-            color: #94a3b8;
+            background: radial-gradient(circle at center, rgba(46, 160, 67, 0.1) 0%, transparent 70%);
         }
 
-        /* Hiding scrollbar for cleaner cards */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; color: #fff; }
+        .hero p { font-size: 1.2rem; color: #8b949e; max-width: 800px; margin: 0 auto; }
+
+        /* Sections */
+        .section { padding: 4rem 5%; }
+        .section-title { font-size: 2.2rem; text-align: center; margin-bottom: 3rem; color: #fff; }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        /* Disease Card */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: 0.3s transform ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover { transform: translateY(-5px); border-color: var(--secondary-color); }
+
+        .card h3 { margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 10px; }
+
+        .tag {
+            display: inline-block;
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--secondary-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        /* Karyotype Status Badge */
+        .karyo-status {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-normal { background: rgba(46, 160, 67, 0.1); border: 1px solid var(--primary-color); }
+        .status-abnormal { background: rgba(255, 71, 87, 0.1); border: 1px solid var(--accent-color); }
+
+        .card-list { list-style: none; margin-top: 1rem; }
+        .card-list li { font-size: 0.9rem; color: #8b949e; margin-bottom: 0.5rem; padding-left: 1.2rem; position: relative; }
+        .card-list li::before { content: "•"; position: absolute; left: 0; color: var(--secondary-color); }
+        .card-list strong { color: #c9d1d9; }
+
+        /* Methods Section */
+        .methods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .method-item { text-align: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; }
+        .method-item i { font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem; }
+
+        footer { text-align: center; padding: 3rem; border-top: 1px solid var(--border-color); color: #6e7681; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .nav-links { display: none; }
         }
     </style>
-
 </head>
-<body class="bg-stone-50 text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-800">
+<body>
 
-    <!-- Navbar -->
-    <nav class="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-2xl mr-2">🌿</span>
-                    <span class="font-bold text-lg tracking-tight">Эко-Мониторинг Пром</span>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <button onclick="app.nav('dashboard')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition bg-slate-800" data-target="dashboard">Обзор</button>
-                        <button onclick="app.nav('nitric')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition" data-target="nitric">Азотная к-та</button>
-                        <button onclick="app.nav('sulfuric')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition" data-target="sulfuric">Серная к-та</button>
-                        <button onclick="app.nav('metallurgy')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition" data-target="metallurgy">Металлургия</button>
-                        <button onclick="app.nav('solutions')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-emerald-700 hover:bg-emerald-600 transition" data-target="solutions">Решения (НДТ)</button>
-                    </div>
-                </div>
-                <!-- Mobile menu button stub (functional in full responsive implementation) -->
-                <div class="-mr-2 flex md:hidden">
-                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-slate-800 p-2 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 focus:outline-none">
-                        <span class="text-xl">☰</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 pb-3 px-2">
-            <button onclick="app.nav('dashboard')" class="block w-full text-left px-3 py-2 text-base font-medium text-white hover:bg-slate-700">Обзор</button>
-            <button onclick="app.nav('nitric')" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:bg-slate-700">Азотная кислота</button>
-            <button onclick="app.nav('sulfuric')" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:bg-slate-700">Серная кислота</button>
-            <button onclick="app.nav('metallurgy')" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:bg-slate-700">Металлургия</button>
-            <button onclick="app.nav('solutions')" class="block w-full text-left px-3 py-2 text-base font-medium text-emerald-400 hover:bg-slate-700">Решения</button>
-        </div>
+    <nav class="navbar">
+        <div class="logo">BioModel<span style="color:#fff">.ai</span></div>
+        <ul class="nav-links">
+            <li><a href="#about">О моделировании</a></li>
+            <li><a href="#diseases">Заболевания</a></li>
+            <li><a href="#methods">Методология</a></li>
+        </ul>
     </nav>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="hero">
+        <h1>Моделирование Жизни</h1>
+        <p>Инновационный подход к изучению патологий: от компьютерных симуляций до анализа кариограмм.</p>
+    </header>
 
-        <!-- VIEW: DASHBOARD -->
-        <section id="view-dashboard" class="fade-in">
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-slate-900 mb-2">Анализ промышленного воздействия</h1>
-                <p class="text-lg text-slate-600 max-w-3xl">
-                    Интерактивный отчет для экологической оценки производства неорганических кислот и металлургических процессов. 
-                    Данный инструмент предназначен для идентификации ключевых поллютантов, источников выбросов и оценки эффективности природоохранных мероприятий.
-                </p>
+    <section id="about" class="section">
+        <h2 class="section-title">Что такое био-моделирование?</h2>
+        <div class="grid" style="grid-template-columns: 1fr;">
+            <div class="card" style="text-align: center;">
+                <p>Это создание упрощённых копий биологических систем. Модели позволяют проводить эксперименты, которые невозможны на человеке, прогнозировать эпидемии и тестировать лекарства в виртуальной или лабораторной среде.</p>
             </div>
-
-            <!-- Key Metrics Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <!-- Card 1 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-rose-100 p-3 rounded-full text-rose-600 font-bold text-xl">NOx</div>
-                        <span class="text-sm font-medium text-slate-500">Азотная пром.</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800">Парниковый эффект</h3>
-                    <p class="text-slate-600 mt-2 text-sm">N₂O в 300 раз активнее CO₂. Основной источник — производство HNO₃.</p>
-                </div>
-                <!-- Card 2 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-amber-100 p-3 rounded-full text-amber-600 font-bold text-xl">SO₂</div>
-                        <span class="text-sm font-medium text-slate-500">Серная/Металлургия</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800">Кислотные дожди</h3>
-                    <p class="text-slate-600 mt-2 text-sm">Диоксид серы — главная причина закисления почв и водоемов.</p>
-                </div>
-                <!-- Card 3 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="bg-slate-100 p-3 rounded-full text-slate-600 font-bold text-xl">Pb/As</div>
-                        <span class="text-sm font-medium text-slate-500">Металлургия</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-800">Тяжелые металлы</h3>
-                    <p class="text-slate-600 mt-2 text-sm">Высокая токсичность пыли: свинец, мышьяк, кадмий при плавке руд.</p>
-                </div>
-            </div>
-
-            <!-- Dashboard Charts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Вклад отраслей в выбросы (Оценка)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="overviewPieChart"></canvas>
-                    </div>
-                    <p class="mt-4 text-xs text-slate-500 italic text-center">Распределение выбросов кислых газов по секторам</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Динамика снижения выбросов (с НДТ)</h3>
-                    <div class="text-sm text-slate-600 mb-4">
-                        Сравнение удельных выбросов (кг/т продукции) при использовании старых технологий и Наилучших Доступных Технологий (НДТ).
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="technologyComparisonChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: NITRIC ACID -->
-        <section id="view-nitric" class="hidden fade-in">
-            <div class="border-b border-slate-200 pb-4 mb-6">
-                <h2 class="text-2xl font-bold text-slate-900">Производство Азотной Кислоты (HNO₃)</h2>
-                <p class="text-slate-600 mt-2">
-                    Основной метод: окисление аммиака (процесс Оствальда). Главная экологическая проблема — выбросы оксидов азота (NOx) и закиси азота (N₂O).
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Process Flow Visualization -->
-                <div class="lg:col-span-1 space-y-4">
-                    <h3 class="font-bold text-slate-700">Схема образования выбросов</h3>
-                    <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
-                        <!-- Step 1 -->
-                        <div class="bg-blue-50 p-3 rounded border border-blue-200 text-center">
-                            <div class="font-bold text-blue-800">1. Подготовка</div>
-                            <div class="text-xs text-blue-600">Смешение NH₃ + Воздух</div>
-                        </div>
-                        <div class="flow-arrow-down"></div>
-                        
-                        <!-- Step 2 -->
-                        <div class="bg-rose-50 p-3 rounded border border-rose-200 text-center relative">
-                            <div class="absolute -right-2 top-0 text-2xl animate-pulse">⚠️</div>
-                            <div class="font-bold text-rose-800">2. Окисление (Pt-Rh)</div>
-                            <div class="text-xs text-rose-600">NH₃ → NO + H₂O</div>
-                            <div class="mt-1 text-xs font-bold text-rose-500 bg-rose-100 inline-block px-2 rounded">Источник N₂O</div>
-                        </div>
-                        <div class="flow-arrow-down"></div>
-
-                        <!-- Step 3 -->
-                        <div class="bg-amber-50 p-3 rounded border border-amber-200 text-center relative">
-                            <div class="absolute -right-2 top-0 text-2xl animate-pulse">⚠️</div>
-                            <div class="font-bold text-amber-800">3. Абсорбция</div>
-                            <div class="text-xs text-amber-600">NO₂ + H₂O → HNO₃</div>
-                            <div class="mt-1 text-xs font-bold text-amber-600 bg-amber-100 inline-block px-2 rounded">Выхлоп NOx ("Лисий хвост")</div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                        <h4 class="font-bold text-indigo-900 text-sm mb-2">Факты:</h4>
-                        <ul class="list-disc pl-4 text-xs text-indigo-800 space-y-1">
-                            <li>Старые заводы выбрасывают до 3 кг NOx на тонну кислоты.</li>
-                            <li>N₂O (побочный продукт) имеет ПГП = 298 (в 298 раз хуже CO₂).</li>
-                            <li>"Лисий хвост" — бурый цвет выхлопных газов из-за NO₂.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Interactive Data & Impact -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Chart -->
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-slate-800">Выбросы NOx в зависимости от давления процесса</h3>
-                            <select id="nitric-pressure-select" onchange="updateNitricChart()" class="bg-slate-100 border-none text-sm rounded px-2 py-1 cursor-pointer hover:bg-slate-200">
-                                <option value="low">Низкое давление (Устаревшее)</option>
-                                <option value="high">Высокое давление + СКВ</option>
-                            </select>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="nitricChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Details Table -->
-                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                        <table class="min-w-full divide-y divide-slate-200">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Загрязнитель</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Воздействие</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Метод очистки</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-slate-200 text-sm">
-                                <tr>
-                                    <td class="px-6 py-4 font-bold text-rose-600">Оксиды азота (NOx)</td>
-                                    <td class="px-6 py-4 text-slate-600">Смог, кислотные дожди, болезни легких</td>
-                                    <td class="px-6 py-4 text-slate-600">Селективное каталитическое восстановление (СКВ)</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 font-bold text-purple-600">Закись азота (N₂O)</td>
-                                    <td class="px-6 py-4 text-slate-600">Разрушение озонового слоя, парниковый эффект</td>
-                                    <td class="px-6 py-4 text-slate-600">Высокотемпературное разложение, вторичные катализаторы</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: SULFURIC ACID -->
-        <section id="view-sulfuric" class="hidden fade-in">
-            <div class="border-b border-slate-200 pb-4 mb-6">
-                <h2 class="text-2xl font-bold text-slate-900">Производство Серной Кислоты (H₂SO₄)</h2>
-                <p class="text-slate-600 mt-2">
-                    Контактный способ. Основные источники сырья: сера, пирит, отходящие газы металлургии. Главный враг экологии — диоксид серы (SO₂).
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Comparative Stats -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-2">Эффективность конверсии (DKDA)</h3>
-                    <p class="text-sm text-slate-500 mb-6">Сравнение системы одинарного контактирования (ОК) и двойного контактирования / двойной абсорбции (ДКДА).</p>
-                    
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between text-sm font-medium mb-1">
-                                <span>Одинарное контактирование</span>
-                                <span class="text-rose-600">97-98% конверсии (Высокие выбросы)</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-4">
-                                <div class="bg-rose-500 h-4 rounded-full" style="width: 97.5%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-sm font-medium mb-1">
-                                <span>Двойное контактирование (ДКДА)</span>
-                                <span class="text-emerald-600">99.7% конверсии (Низкие выбросы)</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-4">
-                                <div class="bg-emerald-500 h-4 rounded-full" style="width: 99.7%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 bg-amber-50 p-4 rounded border border-amber-200">
-                        <h4 class="font-bold text-amber-800 text-sm">Проблема "Кислотного Тумана"</h4>
-                        <p class="text-xs text-amber-700 mt-1">
-                            При абсорбции SO₃ образуется туман серной кислоты, который трудно улавливается обычными фильтрами. Требуются специальные волокнистые туманоуловители.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- SO2 Impact Chart -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Влияние SO₂ на экосистему (pH)</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="sulfurPhChart"></canvas>
-                    </div>
-                    <div class="mt-4 flex gap-2 justify-center">
-                        <button onclick="updateSulfurData('normal')" class="px-3 py-1 text-xs bg-slate-200 hover:bg-slate-300 rounded">Норма</button>
-                        <button onclick="updateSulfurData('rain')" class="px-3 py-1 text-xs bg-amber-200 hover:bg-amber-300 rounded">Кислотный дождь</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: METALLURGY -->
-        <section id="view-metallurgy" class="hidden fade-in">
-            <div class="border-b border-slate-200 pb-4 mb-6">
-                <h2 class="text-2xl font-bold text-slate-900">Металлургическая Промышленность</h2>
-                <p class="text-slate-600 mt-2">
-                    Комплексное загрязнение: атмосферный воздух (пыль, SO₂, CO), водные ресурсы (тяжелые металлы) и почвы (шлаки).
-                </p>
-            </div>
-
-            <!-- Heavy Metals Interactive Grid -->
-            <div class="mb-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Основные загрязнители по типам производства</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Metal 1 -->
-                    <div class="group bg-white p-4 rounded-lg border border-slate-200 hover:border-slate-400 cursor-pointer transition" onclick="showMetalDetails('ferrous')">
-                        <div class="text-3xl mb-2">🏗️</div>
-                        <h4 class="font-bold">Черная металлургия</h4>
-                        <p class="text-xs text-slate-500">Доменное/Сталеплавильное</p>
-                    </div>
-                    <!-- Metal 2 -->
-                    <div class="group bg-white p-4 rounded-lg border border-slate-200 hover:border-slate-400 cursor-pointer transition" onclick="showMetalDetails('copper')">
-                        <div class="text-3xl mb-2">⚡</div>
-                        <h4 class="font-bold">Медная промышленность</h4>
-                        <p class="text-xs text-slate-500">Обжиг сульфидных руд</p>
-                    </div>
-                    <!-- Metal 3 -->
-                    <div class="group bg-white p-4 rounded-lg border border-slate-200 hover:border-slate-400 cursor-pointer transition" onclick="showMetalDetails('aluminum')">
-                        <div class="text-3xl mb-2">🥫</div>
-                        <h4 class="font-bold">Алюминий</h4>
-                        <p class="text-xs text-slate-500">Электролиз, фториды</p>
-                    </div>
-                    <!-- Metal 4 -->
-                    <div class="group bg-white p-4 rounded-lg border border-slate-200 hover:border-slate-400 cursor-pointer transition" onclick="showMetalDetails('nickel')">
-                        <div class="text-3xl mb-2">🔋</div>
-                        <h4 class="font-bold">Никель/Кобальт</h4>
-                        <p class="text-xs text-slate-500">Пирометаллургия</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dynamic Detail Area -->
-            <div id="metal-detail-container" class="bg-slate-800 text-white p-6 rounded-xl shadow-lg transition-all duration-300">
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-1/2">
-                        <h3 id="metal-title" class="text-2xl font-bold text-emerald-400 mb-2">Черная металлургия</h3>
-                        <p id="metal-desc" class="text-slate-300 mb-4">
-                            Крупнейший источник пыли, оксида углерода (CO) и диоксида серы. В агломерационном производстве образуется до 60% всех вредных выбросов завода.
-                        </p>
-                        <ul id="metal-pollutants" class="space-y-2 text-sm">
-                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>Пыль (содержит Fe₂O₃)</li>
-                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>CO (Угарный газ)</li>
-                            <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>SO₂ (из кокса и руды)</li>
-                        </ul>
-                    </div>
-                    <div class="md:w-1/2 bg-slate-700 rounded-lg p-4">
-                        <h4 class="font-bold text-slate-200 mb-2">Состав твердых выбросов (%)</h4>
-                        <div class="chart-wrapper" style="height: 200px;">
-                            <canvas id="metalCompositionChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW: SOLUTIONS -->
-        <section id="view-solutions" class="hidden fade-in">
-            <div class="border-b border-slate-200 pb-4 mb-6">
-                <h2 class="text-2xl font-bold text-emerald-800">Наилучшие Доступные Технологии (НДТ)</h2>
-                <p class="text-slate-600 mt-2">
-                    Калькулятор эффективности очистки. Выберите загрязнитель, чтобы увидеть современные инженерные решения.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <!-- Sidebar Controls -->
-                <div class="md:col-span-4 space-y-2">
-                    <button onclick="renderSolution('nox')" class="w-full text-left p-4 rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition group focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <h4 class="font-bold text-slate-800 group-hover:text-emerald-700">Оксиды азота (NOx)</h4>
-                        <p class="text-xs text-slate-500 mt-1">Производство кислот, сжигание топлива</p>
-                    </button>
-                    <button onclick="renderSolution('so2')" class="w-full text-left p-4 rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition group focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <h4 class="font-bold text-slate-800 group-hover:text-emerald-700">Диоксид серы (SO₂)</h4>
-                        <p class="text-xs text-slate-500 mt-1">Металлургия, сернокислотное пр-во</p>
-                    </button>
-                    <button onclick="renderSolution('dust')" class="w-full text-left p-4 rounded-lg bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition group focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <h4 class="font-bold text-slate-800 group-hover:text-emerald-700">Твердые частицы (Пыль)</h4>
-                        <p class="text-xs text-slate-500 mt-1">Дробление, плавка, агломерация</p>
-                    </button>
-                </div>
-
-                <!-- Solution Display Area -->
-                <div class="md:col-span-8 bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative">
-                    <div id="solution-content">
-                        <!-- Content injected by JS -->
-                        <div class="text-center text-slate-400 py-12">
-                            <p class="text-4xl mb-4">🛠️</p>
-                            <p>Выберите загрязнитель слева, чтобы увидеть методы очистки</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
-            <p>© 2025
-    Материалы для экологической конференции.</p>
-            <p class="mt-2">Темы: Производство неорганических кислот, Металлургия, НДТ.</p>
         </div>
+    </section>
+
+    <section id="diseases" class="section" style="background: rgba(255,255,255,0.02);">
+        <h2 class="section-title">Каталог патологий и их моделирование</h2>
+        <div class="grid">
+
+            <div class="card">
+                <span class="tag">Генетические аномалии</span>
+                <h3><i class="fas fa-dna" style="color:#f7d794"></i> Синдром Дауна</h3>
+                <div class="karyo-status status-abnormal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>47, XX/XY, +21 (Трисомия)</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Моделирование:</strong> Мыши с доп. генами, iPSC-клетки человека.</li>
+                    <li><strong>Цель:</strong> Изучение когнитивного развития и терапии.</li>
+                    <li><strong>Характеристика:</strong> Лишняя хромосома видна при цитогенетическом анализе.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="tag">Онкология</span>
+                <h3><i class="fas fa-biohazard" style="color:#ff4757"></i> Рак (Лейкоз)</h3>
+                <div class="karyo-status status-abnormal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>Анеуплоидия / Перестройки</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Моделирование:</strong> 3D-органоиды опухоли, симуляции роста.</li>
+                    <li><strong>Специфика:</strong> Филадельфийская хромосома t(9;22) в кариотипе.</li>
+                    <li><strong>Метод:</strong> Тестирование химиотерапии "in silico".</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="tag">Нейродегенерация</span>
+                <h3><i class="fas fa-brain" style="color:#a371f7"></i> Болезнь Альцгеймера</h3>
+                <div class="karyo-status status-normal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>Нормальная (46, XX/XY)</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Моделирование:</strong> Церебральные органоиды ("мини-мозг").</li>
+                    <li><strong>Генетика:</strong> Мутации в генах APP/PSEN (не видны в кариотипе).</li>
+                    <li><strong>Прогноз:</strong> Компьютерное моделирование бляшек.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="tag">Эндокринология</span>
+                <h3><i class="fas fa-tint" style="color:#ffa502"></i> Сахарный диабет</h3>
+                <div class="karyo-status status-normal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>Нормальная (46, XX/XY)</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Моделирование:</strong> Культуры β-клеток поджелудочной.</li>
+                    <li><strong>IT-подход:</strong> Цифровые двойники пациента для контроля глюкозы.</li>
+                    <li><strong>Причина:</strong> Многофакторная, на уровне точечных мутаций.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="tag">Инфекционные</span>
+                <h3><i class="fas fa-virus" style="color:#2ed573"></i> COVID-19 / Грипп</h3>
+                <div class="karyo-status status-normal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>Нормальная (46, XX/XY)</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Математика:</strong> Модель SIR (Susceptible-Infected-Recovered).</li>
+                    <li><strong>Биология:</strong> Заражение клеточных линий вирусом.</li>
+                    <li><strong>Примечание:</strong> Вирусы не меняют структуру хромосом человека.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <span class="tag">Орфанные заболевания</span>
+                <h3><i class="fas fa-fingerprint" style="color:#7bed9f"></i> Муковисцидоз</h3>
+                <div class="karyo-status status-normal">
+                    <span>КАРИОГРАММА:</span>
+                    <strong>Нормальная (46, XX/XY)</strong>
+                </div>
+                <ul class="card-list">
+                    <li><strong>Моделирование:</strong> Клеточные культуры с мутацией CFTR.</li>
+                    <li><strong>Животные:</strong> Генетически модифицированные рыбы-зебры.</li>
+                    <li><strong>Диагностика:</strong> Требует ДНК-секвенирования, а не кариотипа.</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="methods" class="section">
+        <h2 class="section-title">Методы построения моделей</h2>
+        <div class="methods-grid">
+            <div class="method-item">
+                <i class="fas fa-calculator"></i>
+                <h4>In Silico</h4>
+                <p>Математические формулы и ИИ-алгоритмы.</p>
+            </div>
+            <div class="method-item">
+                <i class="fas fa-flask"></i>
+                <h4>In Vitro</h4>
+                <p>Клеточные культуры и органоиды в пробирке.</p>
+            </div>
+            <div class="method-item">
+                <i class="fas fa-paw"></i>
+                <h4>In Vivo</h4>
+                <p>Лабораторные животные (мыши, дрозофилы).</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 BioModel.ai — Объединенный портал знаний о биомоделировании</p>
     </footer>
 
-    <!-- LOGIC -->
-    <script>
-        // State Management
-        const state = {
-            currentView: 'dashboard',
-            metalData: {
-                ferrous: {
-                    title: "Черная металлургия",
-                    desc: "Крупнейший источник пыли, CO и SO2. Основные выбросы происходят на стадиях агломерации руды и в доменном процессе.",
-                    pollutants: ["Пыль (20-30%)", "Оксид углерода (50-60%)", "Сернистый ангидрид"],
-                    composition: [30, 60, 10] // Dust, CO, SO2
-                },
-                copper: {
-                    title: "Медная промышленность",
-                    desc: "Критический источник SO2. При обжиге и плавке сульфидных концентратов выделяется газ с содержанием SO2 до 70%.",
-                    pollutants: ["SO2 (очень высоко)", "Мышьяк", "Свинец", "Пыль"],
-                    composition: [15, 5, 80] // Dust, CO, SO2 (approx relative impact)
-                },
-                aluminum: {
-                    title: "Алюминиевая промышленность",
-                    desc: "Специфические загрязнители: фтористый водород (HF) и перфторуглероды (ПФУ) при электролизе.",
-                    pollutants: ["Фториды", "Смолистые вещества", "Пыль глинозема"],
-                    composition: [40, 30, 30] // Dust, Fluorides, Others
-                },
-                nickel: {
-                    title: "Никель-Кобальтовая промышленность",
-                    desc: "Связана с выбросами диоксида серы и аэрозолей тяжелых металлов (Ni, Co, Cu), являющихся канцерогенами.",
-                    pollutants: ["SO2", "Аэрозоли Ni", "Пыль"],
-                    composition: [20, 10, 70] // Dust, Metals, SO2
-                }
-            }
-        };
-
-        // Chart Instances
-        let overviewChart = null;
-        let techChart = null;
-        let nitricChart = null;
-        let sulfurChart = null;
-        let metalChart = null;
-
-        // --- Navigation Logic ---
-        const app = {
-            nav: (targetId) => {
-                // Update State
-                state.currentView = targetId;
-
-                // Toggle Views
-                document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
-                const targetEl = document.getElementById(`view-${targetId}`);
-                if(targetEl) {
-                    targetEl.classList.remove('hidden');
-                    targetEl.classList.add('fade-in');
-                }
-
-                // Update Nav Styling
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    if(btn.dataset.target === targetId) {
-                        btn.classList.add('bg-slate-700', 'text-white');
-                        btn.classList.remove('text-gray-300');
-                    } else {
-                        btn.classList.remove('bg-slate-700', 'text-white');
-                        // Keep 'Solutions' green button distinct if not active
-                        if(btn.dataset.target !== 'solutions') {
-                           // btn.classList.add('text-gray-300');
-                        }
-                    }
-                });
-                
-                // Trigger chart renders if needed
-                if(targetId === 'dashboard') renderDashboardCharts();
-                if(targetId === 'nitric') renderNitricChart();
-                if(targetId === 'sulfuric') renderSulfurChart();
-                if(targetId === 'metallurgy') showMetalDetails('ferrous'); // Default view
-            }
-        };
-
-        // --- Chart Rendering Functions ---
-
-        function renderDashboardCharts() {
-            // Destroy existing charts to prevent memory leaks/glitches
-            if(overviewChart) overviewChart.destroy();
-            if(techChart) techChart.destroy();
-
-            // 1. Overview Pie Chart
-            const ctx1 = document.getElementById('overviewPieChart').getContext('2d');
-            overviewChart = new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Энергетика', 'Транспорт', 'Металлургия', 'Хим. Пром (Кислоты)', 'Прочее'],
-                    datasets: [{
-                        data: [35, 25, 15, 10, 15], // Approximate global SO2/NOx contribution shares
-                        backgroundColor: [
-                            '#cbd5e1', // slate-300 (Energy - context)
-                            '#e2e8f0', // slate-200 (Transport - context)
-                            '#f59e0b', // amber-500 (Metallurgy)
-                            '#ef4444', // red-500 (Chemical)
-                            '#f1f5f9'  // slate-100
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right' }
-                    }
-                }
-            });
-
-            // 2. Tech Comparison Bar Chart
-            const ctx2 = document.getElementById('technologyComparisonChart').getContext('2d');
-            techChart = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: ['SO₂ (Сернокислотное)', 'NOx (Азотнокислотное)', 'Пыль (Металлургия)'],
-                    datasets: [
-                        {
-                            label: 'Без очистки (кг/т)',
-                            data: [35, 10, 50],
-                            backgroundColor: '#ef4444' // red
-                        },
-                        {
-                            label: 'С НДТ (кг/т)',
-                            data: [2, 0.5, 1.5],
-                            backgroundColor: '#10b981' // emerald
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, type: 'logarithmic', title: {display: true, text: 'Выбросы (Лог. шкала)'} }
-                    }
-                }
-            });
-        }
-
-        function renderNitricChart() {
-            if(nitricChart) nitricChart.destroy();
-            updateNitricChart(); // Calls creation logic
-        }
-
-        function updateNitricChart() {
-            const ctx = document.getElementById('nitricChart').getContext('2d');
-            const mode = document.getElementById('nitric-pressure-select').value;
-            
-            // Data simulation based on pressure
-            const data = mode === 'low' 
-                ? [3.5, 2.8, 1.5] // Low pressure: High NO, NO2
-                : [0.3, 0.2, 0.1]; // High pressure + SCR: Low emissions
-
-            if(nitricChart) nitricChart.destroy();
-
-            nitricChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['NO (Оксид)', 'NO₂ (Диоксид)', 'N₂O (Закись)'],
-                    datasets: [{
-                        label: 'Выбросы (кг/т продукции)',
-                        data: data,
-                        backgroundColor: mode === 'low' ? '#f87171' : '#34d399',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 4 }
-                    }
-                }
-            });
-        }
-
-        function renderSulfurChart() {
-            if(sulfurChart) sulfurChart.destroy();
-            updateSulfurData('normal');
-        }
-
-        function updateSulfurData(scenario) {
-            const ctx = document.getElementById('sulfurPhChart').getContext('2d');
-            
-            // Simulating pH drop over time/distance from source
-            const labels = ['0km', '10km', '50km', '100km'];
-            const dataPoints = scenario === 'normal' 
-                ? [6.5, 6.4, 6.5, 6.6] // Normal rain
-                : [4.2, 3.5, 4.0, 5.2]; // Acid rain plume
-
-            if(sulfurChart) sulfurChart.destroy();
-
-            sulfurChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'pH осадков (7 = Нейтрально)',
-                        data: dataPoints,
-                        borderColor: scenario === 'normal' ? '#64748b' : '#d97706',
-                        backgroundColor: scenario === 'normal' ? 'rgba(100,116,139,0.1)' : 'rgba(217,119,6,0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { min: 2, max: 8, reverse: false }
-                    },
-                    plugins: {
-                        annotation: {
-                            // Annotation logic would go here if plugin enabled, strictly keeping to base Chart.js
-                        }
-                    }
-                }
-            });
-        }
-
-        // --- Metallurgy Interaction ---
-        function showMetalDetails(metalKey) {
-            const data = state.metalData[metalKey];
-            
-            // Update Text
-            document.getElementById('metal-title').innerText = data.title;
-            document.getElementById('metal-desc').innerText = data.desc;
-            
-            const list = document.getElementById('metal-pollutants');
-            list.innerHTML = '';
-            data.pollutants.forEach(p => {
-                list.innerHTML += `<li class="flex items-center"><span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>${p}</li>`;
-            });
-
-            // Update Chart
-            if(metalChart) metalChart.destroy();
-            const ctx = document.getElementById('metalCompositionChart').getContext('2d');
-            
-            metalChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Пыль/Твердые', 'Газы (CO, SO2)', 'Прочее'],
-                    datasets: [{
-                        data: data.composition,
-                        backgroundColor: ['#94a3b8', '#f87171', '#fbbf24'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false } // Compact view
-                    }
-                }
-            });
-        }
-
-        // --- Mitigation Solutions Logic ---
-        function renderSolution(type) {
-            const container = document.getElementById('solution-content');
-            let content = '';
-
-            if (type === 'nox') {
-                content = `
-                    <div class="fade-in">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-bold text-slate-800">Борьба с NOx (Азотная к-та)</h3>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">Эфф: до 95%</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-50 p-4 rounded-lg">
-                                <h4 class="font-bold text-slate-700 mb-2">1. Селективное Каталитическое Восстановление (СКВ)</h4>
-                                <p class="text-sm text-slate-600">Введение аммиака в отходящие газы в присутствии катализатора (V₂O₅). NOx превращается в безвредный N₂ и H₂O.</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg">
-                                <h4 class="font-bold text-slate-700 mb-2">2. Высокотемпературное разложение N₂O</h4>
-                                <p class="text-sm text-slate-600">Использование специальных реакторов для разложения закиси азота (сильного парникового газа) сразу после окисления аммиака.</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 p-4 bg-emerald-50 border border-emerald-100 rounded text-sm text-emerald-800">
-                            <strong>Результат:</strong> Современные заводы снижают концентрацию NOx в выхлопе с 2000 ppm до < 150 ppm.
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'so2') {
-                content = `
-                    <div class="fade-in">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-bold text-slate-800">Утилизация SO₂ (Серная/Металлургия)</h3>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">Эфф: до 99.8%</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-50 p-4 rounded-lg">
-                                <h4 class="font-bold text-slate-700 mb-2">1. Метод Двойного Контактирования (ДКДА)</h4>
-                                <p class="text-sm text-slate-600">Промежуточная абсорбция SO₃ повышает конверсию SO₂ в кислоту. Стандарт для современных сернокислотных заводов.</p>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg">
-                                <h4 class="font-bold text-slate-700 mb-2">2. Скрубберы (Известковый метод)</h4>
-                                <p class="text-sm text-slate-600">Промывка газов известковым молоком. SO₂ связывается в гипс (CaSO₄), который можно использовать в строительстве.</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'dust') {
-                content = `
-                    <div class="fade-in">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-bold text-slate-800">Очистка от пыли и аэрозолей</h3>
-                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded">Эфф: 99.9%</span>
-                        </div>
-                        <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <span class="text-2xl mr-3">🔌</span>
-                                <div>
-                                    <h4 class="font-bold text-slate-700">Электрофильтры</h4>
-                                    <p class="text-sm text-slate-600">Ионизация частиц пыли и осаждение их на электродах. Идеально для больших объемов газов металлургии.</p>
-                                </div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-2xl mr-3">🌪️</span>
-                                <div>
-                                    <h4 class="font-bold text-slate-700">Рукавные фильтры</h4>
-                                    <p class="text-sm text-slate-600">Механическая фильтрация через ткань. Улавливает даже мельчайшие частицы (PM2.5).</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = content;
-        }
-
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            renderDashboardCharts();
-        });
-
-    </script>
 </body>
 </html>
