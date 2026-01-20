@@ -1,270 +1,664 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru">6
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BioModel.ai — Биологическое моделирование и Генетика</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>BioModel Genetics: От Кариотипа к Коду</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --text-color: #c9d1d9;
-            --primary-color: #2ea043;
-            --secondary-color: #58a6ff;
-            --accent-color: #ff4757;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-        }
-
-        /* Navigation */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            background: rgba(13, 17, 23, 0.95);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(8px);
-        }
-
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); }
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: var(--text-color); font-size: 0.9rem; transition: 0.3s; }
-        .nav-links a:hover { color: var(--secondary-color); }
-
-        /* Hero */
-        .hero {
-            padding: 6rem 5%;
-            text-align: center;
-            background: radial-gradient(circle at center, rgba(46, 160, 67, 0.1) 0%, transparent 70%);
-        }
-
-        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; color: #fff; }
-        .hero p { font-size: 1.2rem; color: #8b949e; max-width: 800px; margin: 0 auto; }
-
-        /* Sections */
-        .section { padding: 4rem 5%; }
-        .section-title { font-size: 2.2rem; text-align: center; margin-bottom: 3rem; color: #fff; }
-
-        /* Grid System */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Disease Card */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: 0.3s transform ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover { transform: translateY(-5px); border-color: var(--secondary-color); }
-
-        .card h3 { margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 10px; }
-
-        .tag {
-            display: inline-block;
-            background: rgba(88, 166, 255, 0.1);
-            color: var(--secondary-color);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        /* Karyotype Status Badge */
-        .karyo-status {
-            padding: 0.8rem;
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #334155; }
+        .chromosome {
+            width: 14px;
+            background: linear-gradient(180deg, #94a3b8 0%, #cbd5e1 20%, #475569 40%, #cbd5e1 60%, #94a3b8 100%);
             border-radius: 8px;
-            margin: 1rem 0;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: relative;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
-
-        .status-normal { background: rgba(46, 160, 67, 0.1); border: 1px solid var(--primary-color); }
-        .status-abnormal { background: rgba(255, 71, 87, 0.1); border: 1px solid var(--accent-color); }
-
-        .card-list { list-style: none; margin-top: 1rem; }
-        .card-list li { font-size: 0.9rem; color: #8b949e; margin-bottom: 0.5rem; padding-left: 1.2rem; position: relative; }
-        .card-list li::before { content: "•"; position: absolute; left: 0; color: var(--secondary-color); }
-        .card-list strong { color: #c9d1d9; }
-
-        /* Methods Section */
-        .methods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
-        .method-item { text-align: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; }
-        .method-item i { font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem; }
-
-        footer { text-align: center; padding: 3rem; border-top: 1px solid var(--border-color); color: #6e7681; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .nav-links { display: none; }
+        .chromosome:hover { transform: scale(1.1); z-index: 10; cursor: pointer; background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 20%, #0284c7 40%, #bae6fd 60%, #38bdf8 100%);}
+        .chromosome::after {
+            content: '';
+            position: absolute;
+            top: 45%;
+            left: -2px;
+            right: -2px;
+            height: 4px;
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 2px;
+        }
+        .pair-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 4px;
+            height: 80px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .pair-label {
+            font-size: 0.6rem;
+            text-align: center;
+            margin-top: 2px;
+            color: #64748b;
+        }
+        .anomaly-highlight {
+            border: 2px solid #ef4444;
+            background-color: #fee2e2;
+            border-radius: 4px;
+        }
+        .tab-active {
+            border-bottom: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+        .step-connector {
+            flex-grow: 1;
+            height: 2px;
+            background-color: #cbd5e1;
+            margin: 0 10px;
+        }
+        .step-active .step-connector { background-color: #0ea5e9; }
+        
+        /* Chart Container Styling */
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 350px;
+            max-height: 400px;
         }
     </style>
+    <!-- Chosen Palette: "Scientific Clean" - Slate (Text), Sky/Cyan (Primary), Rose (Alert/Anomaly), Indigo (Deep Info) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Sets the context of the portal.
+         2. Comparative Analysis (Tabs + Chart): Allows comparing In Silico/Vitro/Vivo models side-by-side with a quantitative chart.
+         3. Genetic Atlas (Interactive Dashboard): The core feature. Users select a disease, see a simulated CSS-karyotype, and read specific model details.
+         4. Process Flow (Stepper): Visualizes the abstraction from biology to math.
+         5. Future/Digital Twins: A forward-looking summary card.
+    -->
+    <!-- Visualization & Content Choices:
+         - Karyotypes: CSS styled divs (NO SVG). Goal: Visualize anomalies (Trisomy, size changes) directly in the DOM.
+         - Comparison: Radar Chart (Chart.js). Goal: Compare abstract metrics like "Cost", "Ethics", "Accuracy".
+         - Flow: HTML/CSS Stepper. Goal: Show the linear process of data conversion.
+         - NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body>
+<body class="antialiased">
 
-    <nav class="navbar">
-        <div class="logo">BioModel<span style="color:#fff">.ai</span></div>
-        <ul class="nav-links">
-            <li><a href="#about">О моделировании</a></li>
-            <li><a href="#diseases">Заболевания</a></li>
-            <li><a href="#methods">Методология</a></li>
-        </ul>
-    </nav>
-
-    <header class="hero">
-        <h1>Моделирование Жизни</h1>
-        <p>Инновационный подход к изучению патологий: от компьютерных симуляций до анализа кариограмм.</p>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
+                <h1 class="text-xl font-bold text-slate-800">BioModel <span class="text-sky-500">Genetics</span></h1>
+            </div>
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-600">
+                <a href="#models" class="hover:text-sky-500 transition">Сравнение Моделей</a>
+                <a href="#atlas" class="hover:text-sky-500 transition">Генетический Атлас</a>
+                <a href="#pipeline" class="hover:text-sky-500 transition">От Визуала к Коду</a>
+            </nav>
+        </div>
     </header>
 
-    <section id="about" class="section">
-        <h2 class="section-title">Что такое био-моделирование?</h2>
-        <div class="grid" style="grid-template-columns: 1fr;">
-            <div class="card" style="text-align: center;">
-                <p>Это создание упрощённых копий биологических систем. Модели позволяют проводить эксперименты, которые невозможны на человеке, прогнозировать эпидемии и тестировать лекарства в виртуальной или лабораторной среде.</p>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Intro Section -->
+        <section class="text-center space-y-4 max-w-3xl mx-auto">
+            <span class="inline-block px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-xs font-semibold tracking-wide uppercase">Образовательный Портал</span>
+            <h2 class="text-4xl font-bold text-slate-900 leading-tight">Интеграция Клинической Генетики и Биомоделирования</h2>
+            <p class="text-lg text-slate-600">
+                Исследуйте связь между визуальными генетическими аномалиями и методами их компьютерной и биологической симуляции. 
+                От кариограммы пациента до стохастических моделей.
+            </p>
+        </section>
+
+        <!-- Section 1: Classification of Models -->
+        <section id="models" class="scroll-mt-24">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-2 h-8 bg-sky-500 rounded-full"></span>
+                    Классификация Методов Моделирования
+                </h3>
+                <p class="text-slate-500 mt-2">
+                    Сравнительный анализ подходов In Silico, In Vitro и In Vivo для изучения генетических заболеваний.
+                    Выберите категорию ниже, чтобы узнать детали, и посмотрите на график эффективности.
+                </p>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <!-- Left: Interactive Info Cards -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
+                    <div class="flex border-b border-slate-200">
+                        <button onclick="updateModelInfo('silico')" id="btn-silico" class="flex-1 py-4 text-sm font-semibold text-sky-600 border-b-2 border-sky-500 bg-sky-50 transition hover:bg-sky-50">In Silico</button>
+                        <button onclick="updateModelInfo('vitro')" id="btn-vitro" class="flex-1 py-4 text-sm font-medium text-slate-500 hover:text-sky-600 transition">In Vitro</button>
+                        <button onclick="updateModelInfo('vivo')" id="btn-vivo" class="flex-1 py-4 text-sm font-medium text-slate-500 hover:text-sky-600 transition">In Vivo</button>
+                    </div>
+                    <div class="p-6 min-h-[300px]" id="model-content">
+                        <!-- Dynamic Content will load here -->
+                    </div>
+                </div>
+
+                <!-- Right: Radar Chart -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-6">
+                    <h4 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 text-center">Профиль Эффективности</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="modelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Genetic Atlas -->
+        <section id="atlas" class="scroll-mt-24">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-2 h-8 bg-rose-500 rounded-full"></span>
+                    Генетический Атлас & Клинические Кейсы
+                </h3>
+                <p class="text-slate-500 mt-2">
+                    Интерактивная визуализация кариотипов. Выберите заболевание для просмотра специфических хромосомных аберраций 
+                    и соответствующих методов моделирования.
+                </p>
+            </div>
+
+            <!-- Disease Selector -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="selectDisease('down')" class="disease-btn px-4 py-2 rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300 font-medium transition active-disease" data-target="down">Синдром Дауна (T21)</button>
+                <button onclick="selectDisease('cml')" class="disease-btn px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-sky-400 hover:text-sky-600 transition" data-target="cml">ХМЛ (t(9;22))</button>
+                <button onclick="selectDisease('klinefelter')" class="disease-btn px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-sky-400 hover:text-sky-600 transition" data-target="klinefelter">Синдром Клайнфельтера (XXY)</button>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <!-- Visual Karyotype Simulator -->
+                <div class="xl:col-span-2 bg-white rounded-xl shadow-lg border border-slate-100 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-slate-700">Визуализация Кариограммы</h4>
+                        <span id="karyotype-label" class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">47, XY, +21</span>
+                    </div>
+                    
+                    <!-- Karyotype Grid -->
+                    <div id="karyotype-grid" class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 gap-2 justify-center p-4 bg-slate-50 rounded-lg border border-slate-100 min-h-[300px]">
+                        <!-- JS renders chromosomes here -->
+                    </div>
+                    
+                    <div class="mt-4 flex items-center gap-4 text-xs text-slate-500 justify-center">
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-slate-400 rounded-sm"></span> Норма</div>
+                        <div class="flex items-center gap-1"><span class="w-3 h-3 bg-rose-400 rounded-sm border border-rose-600"></span> Аномалия</div>
+                    </div>
+                </div>
+
+                <!-- Info Panel -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-6 flex flex-col h-full">
+                    <div id="disease-info" class="space-y-6 flex-grow">
+                        <!-- Content populated by JS -->
+                    </div>
+                    
+                    <!-- Simulated Photo Gallery (Placeholder for "More Photos") -->
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <h5 class="text-xs font-bold text-slate-400 uppercase mb-2">Клиническая Галерея (Симуляция)</h5>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="aspect-square bg-slate-100 rounded flex items-center justify-center text-slate-300 hover:bg-slate-200 transition cursor-pointer group relative">
+                                <span class="text-2xl">📷</span>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[8px] p-1 opacity-0 group-hover:opacity-100 transition">Фенотип лица</div>
+                            </div>
+                            <div class="aspect-square bg-slate-100 rounded flex items-center justify-center text-slate-300 hover:bg-slate-200 transition cursor-pointer group relative">
+                                <span class="text-2xl">🔬</span>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[8px] p-1 opacity-0 group-hover:opacity-100 transition">FISH-метод</div>
+                            </div>
+                            <div class="aspect-square bg-slate-100 rounded flex items-center justify-center text-slate-300 hover:bg-slate-200 transition cursor-pointer group relative">
+                                <span class="text-2xl">🐁</span>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[8px] p-1 opacity-0 group-hover:opacity-100 transition">Модель Ts65Dn</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Link (Process) -->
+        <section id="pipeline" class="bg-slate-800 rounded-2xl p-8 text-white scroll-mt-24">
+            <div class="mb-8 text-center">
+                <h3 class="text-2xl font-bold mb-2">Связующее Звено: От Образа к Цифре</h3>
+                <p class="text-slate-300 text-sm max-w-2xl mx-auto">
+                    Как данные визуального анализа (микроскопия) конвертируются в математические параметры для создания in silico моделей.
+                </p>
+            </div>
+
+            <!-- Stepper UI -->
+            <div class="relative">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    <!-- Step 1 -->
+                    <div class="step-card bg-slate-700 p-4 rounded-lg cursor-pointer hover:bg-slate-600 transition border-l-4 border-sky-500" onclick="showStep(1)">
+                        <div class="text-sky-400 font-bold text-xs uppercase mb-1">Шаг 1</div>
+                        <div class="font-bold">Биоматериал</div>
+                        <div class="text-xs text-slate-400 mt-1">Цитогенетика</div>
+                    </div>
+                     <!-- Step 2 -->
+                     <div class="step-card bg-slate-700 p-4 rounded-lg cursor-pointer hover:bg-slate-600 transition border-l-4 border-transparent hover:border-sky-500" onclick="showStep(2)">
+                        <div class="text-sky-400 font-bold text-xs uppercase mb-1">Шаг 2</div>
+                        <div class="font-bold">Оцифровка</div>
+                        <div class="text-xs text-slate-400 mt-1">Распознавание образов</div>
+                    </div>
+                     <!-- Step 3 -->
+                     <div class="step-card bg-slate-700 p-4 rounded-lg cursor-pointer hover:bg-slate-600 transition border-l-4 border-transparent hover:border-sky-500" onclick="showStep(3)">
+                        <div class="text-sky-400 font-bold text-xs uppercase mb-1">Шаг 3</div>
+                        <div class="font-bold">Векторизация</div>
+                        <div class="text-xs text-slate-400 mt-1">Параметризация</div>
+                    </div>
+                     <!-- Step 4 -->
+                     <div class="step-card bg-slate-700 p-4 rounded-lg cursor-pointer hover:bg-slate-600 transition border-l-4 border-transparent hover:border-sky-500" onclick="showStep(4)">
+                        <div class="text-sky-400 font-bold text-xs uppercase mb-1">Шаг 4</div>
+                        <div class="font-bold">Моделирование</div>
+                        <div class="text-xs text-slate-400 mt-1">Предикция</div>
+                    </div>
+                </div>
+
+                <!-- Step Detail View -->
+                <div id="step-detail" class="bg-slate-900 rounded-xl p-6 border border-slate-700 min-h-[150px] flex items-center">
+                    <!-- Content injected via JS -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full items-center">
+                        <div class="md:col-span-2">
+                            <h4 class="text-xl font-bold text-sky-400 mb-2">Шаг 1: Получение Цитогенетических Данных</h4>
+                            <p class="text-slate-300">
+                                Процесс начинается с забора материала (кровь, амниотическая жидкость) и проведения G-бэндинга. 
+                                В результате мы получаем визуальное изображение хромосом на стадии метафазы.
+                                <br><br>
+                                <span class="text-xs text-slate-400">Ключевые маркеры: Размеры плеч (p/q), количество полос, центромерный индекс.</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center font-mono text-xs text-green-400">
+                            > INPUT: Image.jpg (Karyotype)<br>
+                            > DETECT: Metaphase spread<br>
+                            > STATUS: Analog Data
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Future -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-4">Будущее: Цифровые Двойники</h3>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    Концепция <strong>Digital Twin</strong> в генетике подразумевает создание полной виртуальной копии генома пациента.
+                    Это позволяет проводить "краш-тесты" лекарств in silico перед их реальным применением.
+                </p>
+                <ul class="space-y-2">
+                    <li class="flex items-start gap-2">
+                        <span class="text-sky-500 mt-1">✓</span>
+                        <span class="text-sm text-slate-700">Персонализированный подбор дозировок (фармакогенетика).</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-sky-500 mt-1">✓</span>
+                        <span class="text-sm text-slate-700">Прогнозирование отложенных эффектов CRISPR-терапии.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-sky-500 mt-1">✓</span>
+                        <span class="text-sm text-slate-700">Интеграция с носимыми устройствами для мониторинга фенотипа.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-1 shadow-lg transform rotate-1 hover:rotate-0 transition duration-500">
+                <div class="bg-white rounded-lg p-6 h-full flex flex-col items-center justify-center text-center">
+                    <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mb-4">🧬</div>
+                    <h4 class="font-bold text-slate-800 mb-1">Виртуальный Пациент #4092</h4>
+                    <p class="text-xs text-slate-500 mb-4">Статус симуляции: <span class="text-green-500 font-bold">Активна</span></p>
+                    <div class="w-full bg-slate-100 rounded-full h-2 mb-2">
+                        <div class="bg-indigo-500 h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">Просчет реакции на терапию</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm">© 2026 BioModel Genetics Educational Portal. Разработано для анализа генетических аномалий.</p>
         </div>
-    </section>
-
-    <section id="diseases" class="section" style="background: rgba(255,255,255,0.02);">
-        <h2 class="section-title">Каталог патологий и их моделирование</h2>
-        <div class="grid">
-
-            <div class="card">
-                <span class="tag">Генетические аномалии</span>
-                <h3><i class="fas fa-dna" style="color:#f7d794"></i> Синдром Дауна</h3>
-                <div class="karyo-status status-abnormal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>47, XX/XY, +21 (Трисомия)</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Моделирование:</strong> Мыши с доп. генами, iPSC-клетки человека.</li>
-                    <li><strong>Цель:</strong> Изучение когнитивного развития и терапии.</li>
-                    <li><strong>Характеристика:</strong> Лишняя хромосома видна при цитогенетическом анализе.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <span class="tag">Онкология</span>
-                <h3><i class="fas fa-biohazard" style="color:#ff4757"></i> Рак (Лейкоз)</h3>
-                <div class="karyo-status status-abnormal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>Анеуплоидия / Перестройки</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Моделирование:</strong> 3D-органоиды опухоли, симуляции роста.</li>
-                    <li><strong>Специфика:</strong> Филадельфийская хромосома t(9;22) в кариотипе.</li>
-                    <li><strong>Метод:</strong> Тестирование химиотерапии "in silico".</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <span class="tag">Нейродегенерация</span>
-                <h3><i class="fas fa-brain" style="color:#a371f7"></i> Болезнь Альцгеймера</h3>
-                <div class="karyo-status status-normal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>Нормальная (46, XX/XY)</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Моделирование:</strong> Церебральные органоиды ("мини-мозг").</li>
-                    <li><strong>Генетика:</strong> Мутации в генах APP/PSEN (не видны в кариотипе).</li>
-                    <li><strong>Прогноз:</strong> Компьютерное моделирование бляшек.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <span class="tag">Эндокринология</span>
-                <h3><i class="fas fa-tint" style="color:#ffa502"></i> Сахарный диабет</h3>
-                <div class="karyo-status status-normal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>Нормальная (46, XX/XY)</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Моделирование:</strong> Культуры β-клеток поджелудочной.</li>
-                    <li><strong>IT-подход:</strong> Цифровые двойники пациента для контроля глюкозы.</li>
-                    <li><strong>Причина:</strong> Многофакторная, на уровне точечных мутаций.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <span class="tag">Инфекционные</span>
-                <h3><i class="fas fa-virus" style="color:#2ed573"></i> COVID-19 / Грипп</h3>
-                <div class="karyo-status status-normal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>Нормальная (46, XX/XY)</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Математика:</strong> Модель SIR (Susceptible-Infected-Recovered).</li>
-                    <li><strong>Биология:</strong> Заражение клеточных линий вирусом.</li>
-                    <li><strong>Примечание:</strong> Вирусы не меняют структуру хромосом человека.</li>
-                </ul>
-            </div>
-
-            <div class="card">
-                <span class="tag">Орфанные заболевания</span>
-                <h3><i class="fas fa-fingerprint" style="color:#7bed9f"></i> Муковисцидоз</h3>
-                <div class="karyo-status status-normal">
-                    <span>КАРИОГРАММА:</span>
-                    <strong>Нормальная (46, XX/XY)</strong>
-                </div>
-                <ul class="card-list">
-                    <li><strong>Моделирование:</strong> Клеточные культуры с мутацией CFTR.</li>
-                    <li><strong>Животные:</strong> Генетически модифицированные рыбы-зебры.</li>
-                    <li><strong>Диагностика:</strong> Требует ДНК-секвенирования, а не кариотипа.</li>
-                </ul>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="methods" class="section">
-        <h2 class="section-title">Методы построения моделей</h2>
-        <div class="methods-grid">
-            <div class="method-item">
-                <i class="fas fa-calculator"></i>
-                <h4>In Silico</h4>
-                <p>Математические формулы и ИИ-алгоритмы.</p>
-            </div>
-            <div class="method-item">
-                <i class="fas fa-flask"></i>
-                <h4>In Vitro</h4>
-                <p>Клеточные культуры и органоиды в пробирке.</p>
-            </div>
-            <div class="method-item">
-                <i class="fas fa-paw"></i>
-                <h4>In Vivo</h4>
-                <p>Лабораторные животные (мыши, дрозофилы).</p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 BioModel.ai — Объединенный портал знаний о биомоделировании</p>
     </footer>
 
+    <!-- LOGIC -->
+    <script>
+        // --- Data ---
+        const modelData = {
+            silico: {
+                title: "In Silico (Компьютерное моделирование)",
+                desc: "Использование математических алгоритмов и вычислительных мощностей для симуляции биологических процессов.",
+                types: ["SIR модели (распространение мутаций)", "Агентное моделирование (клеточные популяции)", "Молекулярная динамика"],
+                pros: ["Высокая скорость", "Низкая стоимость", "Этическая безопасность", "Масштабируемость"],
+                cons: ["Зависимость от качества входных данных", "Сложность моделирования стохастики", "Требует валидации in vivo"],
+                stats: [90, 95, 20, 100, 60] // Speed, Cost(Efficiency), Bio-realism, Ethics, Complexity
+            },
+            vitro: {
+                title: "In Vitro (В пробирке)",
+                desc: "Эксперименты на клеточных культурах вне живого организма. Золотой стандарт для скрининга.",
+                types: ["Органоиды (мини-органы)", "iPSC (индуцированные плюрипотентные стволовые клетки)", "CRISPR-линии"],
+                pros: ["Контролируемые условия", "Работа с человеческими клетками", "Возможность высокопроизводительного скрининга"],
+                cons: ["Отсутствие системного ответа организма", "Сложность поддержания культуры", "Артефакты среды"],
+                stats: [50, 60, 60, 80, 70]
+            },
+            vivo: {
+                title: "In Vivo (В живом организме)",
+                desc: "Использование лабораторных животных с модифицированным геномом для изучения болезни в контексте целого организма.",
+                types: ["Трансгенные животные (мыши Ts65Dn)", "Нокаут-линии", "Ксенографты"],
+                pros: ["Полный системный ответ", "Изучение поведения и фенотипа", "Долгосрочные эффекты"],
+                cons: ["Высокая стоимость", "Этические проблемы", "Межвидовые различия"],
+                stats: [20, 10, 95, 40, 95]
+            }
+        };
+
+        const diseases = {
+            down: {
+                name: "Синдром Дауна (Трисомия 21)",
+                karyotype: "47, XX/XY, +21",
+                desc: "Наиболее распространенная геномная патология, вызванная наличием дополнительной копии 21-й хромосомы. Приводит к нарушению экспрессии генов (эффект дозы гена).",
+                mechanism: "Нерасхождение хромосом в мейозе (95%) или робертсоновская транслокация.",
+                modelText: "<strong>Модель Ts65Dn (Мыши):</strong> Самая популярная линия. Имеет трисомию по фрагменту 16-й хромосомы мыши, гомологичному 21-й хромосоме человека. Используется для тестирования препаратов, улучшающих когнитивные функции.",
+                chromosomes: generateChromosomes('down')
+            },
+            cml: {
+                name: "Хронический Миелолейкоз (CML)",
+                karyotype: "46, XY, t(9;22)(q34;q11)",
+                desc: "Миелопролиферативное заболевание, ассоциированное с Филадельфийской хромосомой.",
+                mechanism: "Реципрокная транслокация между хромосомами 9 и 22. Образуется химерный ген <em>BCR-ABL1</em>, кодирующий гиперактивную тирозинкиназу.",
+                modelText: "<strong>Молекулярный докинг (In Silico):</strong> Ключевую роль сыграло моделирование структуры кармана тирозинкиназы для создания Иматиниба (Гливек) — первого таргетного препарата, блокирующего этот белок.",
+                chromosomes: generateChromosomes('cml')
+            },
+            klinefelter: {
+                name: "Синдром Клайнфельтера",
+                karyotype: "47, XXY",
+                desc: "Полисомия по половым хромосомам у мужчин. Характеризуется гипогонадизмом и бесплодием.",
+                mechanism: "Нерасхождение половых хромосом (XX яйцеклетка или XY сперматозоид).",
+                modelText: "<strong>Гормональное моделирование:</strong> Изучение влияния избытка X-хромосомы на эндокринную систему. In vitro модели (клетки Лейдига) используются для оценки тестостеронового ответа.",
+                chromosomes: generateChromosomes('klinefelter')
+            }
+        };
+
+        const steps = {
+            1: {
+                title: "Шаг 1: Получение Цитогенетических Данных",
+                text: "Процесс начинается с забора материала и G-бэндинга. Получаем визуальное изображение хромосом (кариограмму).",
+                subtext: "Ключевые маркеры: Размеры плеч (p/q), бэндинг-паттерн.",
+                code: "> INPUT: Image.jpg\n> DETECT: Metaphase spread\n> TYPE: Analog"
+            },
+            2: {
+                title: "Шаг 2: Оцифровка и Сегментация",
+                text: "Компьютерное зрение (CV) выделяет отдельные хромосомы, выравнивает их и классифицирует по размеру и центромере.",
+                subtext: "Технологии: Neural Networks (CNN), Edge Detection.",
+                code: "> PROCESS: Segmentation\n> CLASS: Chromosome 21\n> CONFIDENCE: 99.8%"
+            },
+            3: {
+                title: "Шаг 3: Векторизация Аномалий",
+                text: "Визуальные отклонения (лишняя хромосома, укорочение) переводятся в числовые векторы. 'Лишняя 21' превращается в коэффициент экспрессии генов 1.5x.",
+                subtext: "Данные: Gene Dosage Matrix, Structural Variants List.",
+                code: "> VAR: Gene_Exp_21 = 1.5\n> MUTATION: Translocation(9;22)\n> VECTOR: [0, 0, 1, ...]"
+            },
+            4: {
+                title: "Шаг 4: Предиктивное Моделирование",
+                text: "Числовые данные загружаются в стохастические или агентные модели для прогноза развития патологии или реакции на лекарство.",
+                subtext: "Результат: Прогноз фенотипа, подбор терапии.",
+                code: "> RUN: Simulation.exe\n> PREDICT: Drug Resistance = Low\n> OUTPUT: Report.pdf"
+            }
+        };
+
+        // --- Init Chart ---
+        let radarChart;
+
+        function initChart() {
+            const ctx = document.getElementById('modelChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Скорость', 'Экон. эффективность', 'Био-реализм', 'Этика', 'Сложность'],
+                    datasets: [{
+                        label: 'In Silico',
+                        data: modelData.silico.stats,
+                        fill: true,
+                        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                        borderColor: 'rgb(14, 165, 233)',
+                        pointBackgroundColor: 'rgb(14, 165, 233)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(14, 165, 233)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // Hide numbers for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // --- Functions ---
+
+        function updateModelInfo(type) {
+            // Update UI buttons
+            document.querySelectorAll('#models button').forEach(b => {
+                b.classList.remove('text-sky-600', 'border-b-2', 'border-sky-500', 'bg-sky-50');
+                b.classList.add('text-slate-500');
+            });
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.classList.remove('text-slate-500');
+            activeBtn.classList.add('text-sky-600', 'border-b-2', 'border-sky-500', 'bg-sky-50');
+
+            // Update Content
+            const data = modelData[type];
+            const contentDiv = document.getElementById('model-content');
+            
+            let typesHtml = data.types.map(t => `<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-sky-400 rounded-full"></span>${t}</li>`).join('');
+            let prosHtml = data.pros.map(p => `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">${p}</span>`).join('');
+            let consHtml = data.cons.map(c => `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">${c}</span>`).join('');
+
+            contentDiv.innerHTML = `
+                <h4 class="text-xl font-bold text-slate-800 mb-2">${data.title}</h4>
+                <p class="text-slate-600 mb-6 text-sm leading-relaxed">${data.desc}</p>
+                
+                <div class="mb-4">
+                    <h5 class="text-xs font-bold text-slate-400 uppercase mb-2">Примеры методов:</h5>
+                    <ul class="text-sm text-slate-700 space-y-2">${typesHtml}</ul>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-4 mt-6">
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase mb-2">Плюсы:</h5>
+                        <div class="flex flex-wrap gap-2">${prosHtml}</div>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase mb-2">Ограничения:</h5>
+                        <div class="flex flex-wrap gap-2">${consHtml}</div>
+                    </div>
+                </div>
+            `;
+
+            // Update Chart
+            radarChart.data.datasets[0].data = data.stats;
+            radarChart.data.datasets[0].label = data.title;
+            // Color change based on type
+            let color = '14, 165, 233'; // Default Sky
+            if (type === 'vitro') color = '168, 85, 247'; // Purple
+            if (type === 'vivo') color = '244, 63, 94'; // Rose
+            
+            radarChart.data.datasets[0].backgroundColor = `rgba(${color}, 0.2)`;
+            radarChart.data.datasets[0].borderColor = `rgb(${color})`;
+            radarChart.data.datasets[0].pointBackgroundColor = `rgb(${color})`;
+            radarChart.update();
+        }
+
+        // Helper to generate chromosome array structure
+        function generateChromosomes(type) {
+            let pairs = [];
+            // Pairs 1-22
+            for(let i=1; i<=22; i++) {
+                let height = 60 - (i * 1.5); // decrease size
+                let count = 2;
+                let isAnomaly = false;
+
+                // Down Syndrome Logic
+                if (type === 'down' && i === 21) {
+                    count = 3;
+                    isAnomaly = true;
+                }
+
+                // CML Logic
+                if (type === 'cml') {
+                    if (i === 9 || i === 22) isAnomaly = true;
+                }
+
+                pairs.push({ id: i, height: height, count: count, anomaly: isAnomaly });
+            }
+            
+            // Sex Chromosomes
+            let sexPair = { id: 'XY', height: 30, count: 2, anomaly: false, labels: ['X', 'Y'] };
+            if (type === 'klinefelter') {
+                sexPair = { id: 'XXY', height: 35, count: 3, anomaly: true, labels: ['X', 'X', 'Y'] };
+            }
+            pairs.push(sexPair);
+            return pairs;
+        }
+
+        function renderChromosomes(diseaseKey) {
+            const data = diseases[diseaseKey];
+            const grid = document.getElementById('karyotype-grid');
+            grid.innerHTML = '';
+
+            data.chromosomes.forEach((pair, index) => {
+                const container = document.createElement('div');
+                container.className = `pair-container ${pair.anomaly ? 'anomaly-highlight' : ''}`;
+                
+                // Determine visuals
+                for(let k=0; k<pair.count; k++) {
+                    const chrom = document.createElement('div');
+                    chrom.className = 'chromosome';
+                    
+                    // Height adjustments
+                    let h = pair.height;
+                    // For XY
+                    if(pair.id === 'XY' && k === 1) h = 15; // Y is small
+                    if(pair.id === 'XXY' && k === 2) h = 15; // Y is small
+                    // For CML t(9;22)
+                    if(diseaseKey === 'cml') {
+                        if(pair.id === 22 && k === 1) h = 10; // Ph chromosome is tiny
+                        if(pair.id === 9 && k === 1) h = pair.height + 10; // Translocated 9 is longer
+                    }
+
+                    chrom.style.height = `${h}px`;
+                    container.appendChild(chrom);
+                }
+
+                // Label
+                const label = document.createElement('div');
+                label.className = 'absolute bottom-1 text-[8px] text-slate-400 w-full text-center font-mono';
+                // Only show label for container logic, complicated to append absolute to flex, sticking to outer label
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-col items-center';
+                wrapper.appendChild(container);
+                
+                const lbl = document.createElement('span');
+                lbl.innerText = pair.id;
+                lbl.className = 'pair-label';
+                wrapper.appendChild(lbl);
+
+                grid.appendChild(wrapper);
+            });
+        }
+
+        function selectDisease(key) {
+            // Update Buttons
+            document.querySelectorAll('.disease-btn').forEach(b => {
+                b.classList.remove('bg-slate-200', 'text-slate-700', 'font-medium');
+                b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                if(b.dataset.target === key) {
+                    b.classList.remove('bg-white', 'border', 'border-slate-200');
+                    b.classList.add('bg-slate-200', 'text-slate-700', 'font-medium');
+                }
+            });
+
+            const data = diseases[key];
+            
+            // Render Karyotype
+            document.getElementById('karyotype-label').innerText = data.karyotype;
+            renderChromosomes(key);
+
+            // Update Info
+            const infoDiv = document.getElementById('disease-info');
+            infoDiv.innerHTML = `
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-1">${data.name}</h3>
+                    <p class="text-sm text-slate-500">${data.desc}</p>
+                </div>
+                
+                <div class="bg-rose-50 border-l-4 border-rose-400 p-4 rounded-r-lg">
+                    <h5 class="text-xs font-bold text-rose-700 uppercase mb-1">Механизм возникновения</h5>
+                    <p class="text-sm text-slate-700">${data.mechanism}</p>
+                </div>
+
+                <div class="bg-sky-50 border-l-4 border-sky-400 p-4 rounded-r-lg">
+                    <h5 class="text-xs font-bold text-sky-700 uppercase mb-1">Биомоделирование & Терапия</h5>
+                    <p class="text-sm text-slate-700">${data.modelText}</p>
+                </div>
+            `;
+        }
+
+        function showStep(stepNum) {
+            // UI Highlight
+            document.querySelectorAll('.step-card').forEach(c => {
+                 c.classList.remove('border-sky-500');
+                 c.classList.add('border-transparent');
+            });
+            // Since onclick passes number, find the nth child (or by index)
+            document.querySelectorAll('.step-card')[stepNum-1].classList.remove('border-transparent');
+            document.querySelectorAll('.step-card')[stepNum-1].classList.add('border-sky-500');
+
+            const data = steps[stepNum];
+            const detailDiv = document.getElementById('step-detail');
+            
+            // Animation reset
+            detailDiv.style.opacity = 0;
+            
+            setTimeout(() => {
+                detailDiv.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full items-center">
+                    <div class="md:col-span-2">
+                        <h4 class="text-xl font-bold text-sky-400 mb-2">${data.title}</h4>
+                        <p class="text-slate-300 mb-2">${data.text}</p>
+                        <p class="text-xs text-slate-400 italic">${data.subtext}</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 font-mono text-xs text-green-400 shadow-inner">
+                        ${data.code.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+                `;
+                detailDiv.style.opacity = 1;
+                detailDiv.style.transition = 'opacity 0.3s ease-in';
+            }, 100);
+        }
+
+        // --- Initialization ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            updateModelInfo('silico');
+            selectDisease('down'); // Default View
+        });
+
+    </script>
 </body>
 </html>
